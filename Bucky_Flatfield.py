@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # PyWAD is an open-source set of plugins for the WAD-Software medical physics quality control software. 
 # The WAD Software can be found on https://github.com/wadqc
 # 
