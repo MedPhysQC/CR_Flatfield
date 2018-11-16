@@ -2,8 +2,8 @@
     "configs": {
         "CONFIG-0": {
             "datatype": "dcm_series",
-            "description": "Catphan 503",
-            "filename": "config_0_0.json",
+            "description": "Bucky flatfield analysis",
+            "filename": "Bucky_flatfield.json",
             "metafilename": " ",
             "module": "MODULE-0",
             "name": "CR_Flatfield",
