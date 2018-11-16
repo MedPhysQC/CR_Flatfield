@@ -5,7 +5,7 @@
     },
     "module": {
         "description": "Bucky flatfield",
-        "executable": "Bucky_flatfield.py",
+        "executable": "Bucky_Flatfield.py",
         "name": "Bucky_flatfield",
         "code": "python",
         "dependencies": [
