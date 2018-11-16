@@ -435,7 +435,7 @@ def getprotocolname(dcmInfile,params):
     
 def getIQlevel(protocolname,params):
     "the IQlevel determines which protocols need to be analyzed. If the default value is set >0 all series will be processed " 
-    IQlevel = params["params"]["IQlevel"]["default"] # default: no level at all
+    IQlevel = int(params["params"]["IQlevel"]["default"]) # default: no level at all
 
     if IQlevel > 0:
         return 1
