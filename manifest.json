@@ -4,7 +4,7 @@
             "datatype": "dcm_series",
             "description": "Bucky flatfield analysis",
             "filename": "Bucky_flatfield.json",
-            "metafilename": " ",
+            "metafilename": "",
             "module": "MODULE-0",
             "name": "CR_Flatfield",
             "origin": "factory"
