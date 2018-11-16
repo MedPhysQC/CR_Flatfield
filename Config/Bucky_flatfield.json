@@ -1,0 +1,29 @@
+{
+	"actions": {
+		"acqdatetime": {
+			"filters": {},
+			"params": {}
+		},
+		"buckymain": {
+			"filters": {},
+			"params": {}
+		}
+	},
+	"cfgformat": "20181030",
+	"comments": {
+		"author": "Dennis Dickerscheid, ASZ",
+		"creator": " ",
+		"description": "Simple CR Flatfield IQ analysis",
+		"usage": [""],
+		"version": "20181110"
+	},
+	"info": {
+		"acqdatetime": {
+			"params": {}
+		},
+		"qc_series": {
+			"params": {}
+		}
+	}
+
+}

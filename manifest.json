@@ -1,0 +1,28 @@
+{
+    "configs": {
+        "CONFIG-0": {
+            "datatype": "dcm_series",
+            "description": "Catphan 503",
+            "filename": "config_0_0.json",
+            "metafilename": "config_0_0.json",
+            "module": "MODULE-0",
+            "name": "CR_Flatfield",
+            "origin": "factory"
+        }
+    },
+    "info": {
+        "dbversion": "20181111",
+        "magic": "wad-qc-export"
+    },
+    "modules": {
+        "MODULE-0": {
+            "description": "CR_Flatfield",
+            "executable": "Bucky_Flatfield.py",
+            "folder": "module_0",
+            "name": "CR_Flatfield",
+            "origin": "factory",
+            "repo_url": "",
+            "repo_version": ""
+        }
+    }
+}
