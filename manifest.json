@@ -3,7 +3,7 @@
         "CONFIG-0": {
             "datatype": "dcm_series",
             "description": "Bucky flatfield analysis",
-            "filename": "Bucky_flatfield.json",
+            "filename": "config_0_0.json",
             "metafilename": "config_0_0.json",
             "module": "MODULE-0",
             "name": "CR_Flatfield",
