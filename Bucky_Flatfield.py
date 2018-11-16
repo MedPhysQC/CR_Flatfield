@@ -190,7 +190,7 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,level=None):
     imageID = cleanstring(label)
     filename = prefix + '_unif_' + imageID + '.jpg'
     plt.savefig(filename)
-    results.addObject(os.path.splitext(filename)[0],filename,level)
+    results.addObject(os.path.splitext(filename)[0],filename)
 
 def analyse_dose(dcmInfile,prefix,results):
     '''
@@ -403,8 +403,10 @@ def getprotocolname(dcmInfile,params):
     return protocolname
     
 def getIQlevel(protocolname,params):
-    IQlevel = -1 # default: no level at all
+    "the IQlevel determines which protocols need to be analyzed. If the default value is set >0 all series will be processed " 
+    IQlevel = params["params"]["IQlevel"]["default"] # default: no level at all
 
+    print(params["params"]["IQlevel"])
     '''
     for element in params:
         #Check if the XML tags contain a restriction on the protocolname.
@@ -427,7 +429,6 @@ def Bucky_Flatfield_main(data, results, params):
         dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=True,logTag=logTag())
         
 
-        print (np.shape(pixeldataIn))
         ############################################################
         # Read protocol name, which will be used                   #
         # as prefix in the description column                      #
@@ -443,7 +444,8 @@ def Bucky_Flatfield_main(data, results, params):
         # will be provided for a subset of the images with         #
 	  # the protocol names specified in the configuration XML    #
         ############################################################
-        IQlevel = getIQlevel(protocolname,params);
+        IQlevel = getIQlevel(protocolname,params)
+        print ("IQlevel",IQlevel)
         if (IQlevel >= 0):
             dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=False,logTag=logTag())
             analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,IQlevel)

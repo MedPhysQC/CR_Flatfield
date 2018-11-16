@@ -6,7 +6,9 @@
 		},
 		"buckymain": {
 			"filters": {},
-			"params": {}
+		    "params": {
+			"IQlevel": {"default":1,"Q DW1 Wand B":1}
+		    }
 		}
 	},
 	"cfgformat": "20181030",
