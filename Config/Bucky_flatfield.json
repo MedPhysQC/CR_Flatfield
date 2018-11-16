@@ -7,7 +7,7 @@
 		"buckymain": {
 			"filters": {},
 		    "params": {
-			"IQlevel": {"default":1,"Q DW1 Wand B":1}
+			"IQlevel": {"default":-1,"Q DW1 wand B":1}
 		    }
 		}
 	},

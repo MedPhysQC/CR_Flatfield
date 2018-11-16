@@ -436,16 +436,15 @@ def getIQlevel(protocolname,params):
     "the IQlevel determines which protocols need to be analyzed. If the default value is set >0 all series will be processed " 
     IQlevel = params["params"]["IQlevel"]["default"] # default: no level at all
 
-    print(params["params"]["IQlevel"])
-    '''
-    for element in params:
-        #Check if the XML tags contain a restriction on the protocolname.
-        if ("IQlevel" in params.keys()):
-            protocolnamefilter = element.attrib["protocolname"]
-            if ( protocolname == protocolnamefilter ):
-                #override default
-                IQlevel = int(element.text)
-    '''         
+    if IQlevel > 0:
+        return 1
+
+    else:    
+        for key in params["params"]["IQlevel"].keys():
+            print (key,protocolname,key==protocolname)
+            if ( protocolname == key ):
+                    #override default
+                    IQlevel = int(params["params"]["IQlevel"][key])
 
     return IQlevel
 
