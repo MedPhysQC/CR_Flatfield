@@ -6,7 +6,7 @@
     "module": {
         "description": "Bucky flatfield",
         "executable": "Bucky_Flatfield.py",
-        "name": "Bucky_flatfield",
+        "name": "CR_Flatfield",
         "code": "python",
         "dependencies": [
             "numpy",
