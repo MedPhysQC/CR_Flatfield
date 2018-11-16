@@ -7,7 +7,7 @@
             "metafilename": "config_0_0.json",
             "module": "MODULE-0",
             "name": "CR_Flatfield",
-            "origin": "factory"
+            "origin": "user"
         }
     },
     "info": {
@@ -20,7 +20,7 @@
             "executable": "Bucky_Flatfield.py",
             "folder": "module_0",
             "name": "CR_Flatfield",
-            "origin": "factory",
+            "origin": "user",
             "repo_url": "",
             "repo_version": ""
         }
