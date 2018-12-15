@@ -39,8 +39,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-
-import dicom
+try:
+    import pydicom as dicom
+except ImportError:
+    import dicom
 from PIL import Image
 from scipy import ndimage
 
