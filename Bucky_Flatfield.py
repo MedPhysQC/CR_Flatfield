@@ -437,21 +437,6 @@ def getprotocolname(dcmInfile,params):
 
     return protocolname
     
-def getIQlevel(protocolname,params):
-    "the IQlevel determines which protocols need to be analyzed. If the default value is set >0 all series will be processed " 
-    IQlevel = int(params["params"]["IQlevel"]["default"]) # default: no level at all
-
-    if IQlevel > 0:
-        return 1
-
-    else:    
-        for key in params["params"]["IQlevel"].keys():
-            print (key,protocolname,key==protocolname)
-            if ( protocolname == key ):
-                    #override default
-                    IQlevel = int(params["params"]["IQlevel"][key])
-
-    return IQlevel
 
 def Bucky_Flatfield_main(data, results, params):
     logging.exception('Bucky image quality started');
@@ -473,16 +458,8 @@ def Bucky_Flatfield_main(data, results, params):
         prefix = cleanstring( protocolname )
         print ("prefix:", prefix)
 
-        ############################################################
-	  # Image Quality assessment and image thumbnail             #
-        # will be provided for a subset of the images with         #
-	  # the protocol names specified in the configuration XML    #
-        ############################################################
-        IQlevel = getIQlevel(protocolname,params)
-        print ("IQlevel",IQlevel)
-        if (IQlevel >= 0):
-            dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=False,logTag=logTag())
-            analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,IQlevel)
+        dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=False,logTag=logTag())
+        analyse_image_quality(dcmInfile,pixeldataIn,prefix,results)
 
         ############################################################
 	  # Dose assessment will be provided for all images          #
