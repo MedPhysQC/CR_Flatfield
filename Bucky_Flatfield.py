@@ -18,8 +18,8 @@
 # It produces DAP, REX, EI, SNR in the center ROI, and Homogeneity in 5 ROI's
 #
 
-__version__ = '20181030'
-__author__ = 'c.den.harder,d.dickerscheid'
+__version__ = '20190427'
+__author__ = 'c.den.harder'
 
 
 import matplotlib
@@ -186,7 +186,7 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,level=None):
     # Image thunbnail for quick check       #
     # for presence of artifacts             #
     #########################################
-    plt.figure() 
+    fig = plt.figure() 
     pt = pixeldataIn.transpose();
 
     
@@ -221,6 +221,8 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,level=None):
     plt.savefig(filename)
     results.addObject(os.path.splitext(filename)[0],filename)
 
+    fig.clf()
+    plt.close()
 
 
 
