@@ -25,7 +25,10 @@
 			"params": {}
 		},
 		"qc_series": {
-			"params": {}
+			"params": {
+				"protocoltag": "Dicom tag containing the protocol name (default: 0x0008,0x1030 = ProtocolName)",
+				"ROIsize [%]": "ROIsize as percentage of width/height (default: 18)"
+			}
 		}
 	}
 

@@ -25,6 +25,7 @@ __author__ = 'c.den.harder'
 
 import matplotlib
 matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
+import matplotlib.patches as patches
 
 import os,sys
 import numpy as np
@@ -191,44 +192,33 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results,level=None
     fig = plt.figure() 
     pt = pixeldataIn.transpose();
 
-    
-    plt.imshow(pt,cmap='jet') #plt.gray())
 
-    ctr_ROI = np.zeros(np.shape(pt))
-    ctr_ROI[ctr_x_start:ctr_x_end,ctr_y_start:ctr_y_end]=1
-    plt.imshow(ctr_ROI, cmap='jet', alpha=0.25)
+    plt.imshow(pt,cmap=plt.gray())
 
+    rect = patches.Rectangle((ctr_x_start,ctr_y_start),halfROIsize_x*2,halfROIsize_y*2,linewidth=1,edgecolor='r',facecolor='none')
+    plt.gca().add_patch(rect)
 
-    tl_ROI = np.zeros(np.shape(pt))
-    tl_ROI[tl_x_start:tl_x_end,tl_y_start:tl_y_end]=1
-    plt.imshow(tl_ROI, cmap='jet', alpha=0.25)
+    rect = patches.Rectangle((tl_x_start,tl_y_start),halfROIsize_x*2,halfROIsize_y*2,linewidth=1,edgecolor='r',facecolor='none')
+    plt.gca().add_patch(rect)
 
-    tr_ROI = np.zeros(np.shape(pt))    
-    tr_ROI[tr_x_start:tr_x_end,tr_y_start:tr_y_end]=1
-    plt.imshow(tr_ROI, cmap='jet', alpha=0.25)
+    rect = patches.Rectangle((tr_x_start,tr_y_start),halfROIsize_x*2,halfROIsize_y*2,linewidth=1,edgecolor='r',facecolor='none')
+    plt.gca().add_patch(rect)
 
-    bl_ROI = np.zeros(np.shape(pt))
-    bl_ROI[bl_x_start:bl_x_end,bl_y_start:bl_y_end]=1
-    plt.imshow(bl_ROI, cmap='jet', alpha=0.25)
+    rect = patches.Rectangle((bl_x_start,bl_y_start),halfROIsize_x*2,halfROIsize_y*2,linewidth=1,edgecolor='r',facecolor='none')
+    plt.gca().add_patch(rect)
 
-    br_ROI = np.zeros(np.shape(pt))
-    br_ROI[br_x_start:br_x_end,br_y_start:br_y_end]=1
-    plt.imshow(br_ROI, cmap='jet', alpha=0.25)
+    rect = patches.Rectangle((br_x_start,br_y_start),halfROIsize_x*2,halfROIsize_y*2,linewidth=1,edgecolor='r',facecolor='none')
+    plt.gca().add_patch(rect)
 
-
-    
     label = wadwrapper_lib.readDICOMtag('0x0018,0x700A',dcmInfile)
     imageID = cleanstring(label)
     filename = prefix + '_unif_' + imageID + '.jpg'
     plt.savefig(filename)
-    results.addObject(os.path.splitext(filename)[0],filename)
-
     fig.clf()
     plt.close()
+    results.addObject(os.path.splitext(filename)[0],filename)
 
 
-
-    
 def analyse_dose(dcmInfile,prefix,results):
     '''
     Process an image, and derive:
@@ -433,7 +423,7 @@ def analyse_dose(dcmInfile,prefix,results):
 def getprotocolname(dcmInfile,params):
     protocoltag = '0x0018,0x1030' #default tag: ProtocolName
     if ("protocoltag" in sorted(params.keys())):
-        protocoltag = params["protocoltag"]
+        protocoltag = params['protocoltag']
 
     protocolname = wadwrapper_lib.readDICOMtag(protocoltag,dcmInfile)
 
