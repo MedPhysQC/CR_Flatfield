@@ -8,7 +8,8 @@
 #
 # Date: 2018-11-15
 # Version: 1.0
-# Authors: C. den Harder, D. Dickerscheid (update to wad2)
+# Authors: C. den Harder
+# Update to wad2: D. Dickerscheid
 # Changelog:
 #
 #
@@ -430,7 +431,7 @@ def analyse_dose(dcmInfile,prefix,results):
 
 def getprotocolname(dcmInfile,params):
     protocoltag = '0x0018,0x1030' #default tag: ProtocolName
-    if ("protocoltag" in params.keys()):
+    if ("protocoltag" in sorted(params.keys())):
         protocoltag = params["protocoltag"]
 
     protocolname = wadwrapper_lib.readDICOMtag(protocoltag,dcmInfile)
@@ -438,8 +439,13 @@ def getprotocolname(dcmInfile,params):
     return protocolname
     
 
-def Bucky_Flatfield_main(data, results, params):
-    logging.exception('Bucky image quality started');
+def Bucky_Flatfield_main(data, results, action):
+    print("Bucky image quality started");
+
+    try:
+        params = action['params']
+    except KeyError:
+        params = {}
 
     #inputfile = data.series_filelist[0]
     #Bucky_Flatfield_analyse_image(inputfile,results)

@@ -6,8 +6,9 @@
 		},
 		"buckymain": {
 			"filters": {},
-		    "params": {
-		    }
+		   	"params": {
+				"protocoltag": "0x0008,0x103E"
+			}
 		}
 	},
 	"cfgformat": "20181030",
