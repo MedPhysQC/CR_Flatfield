@@ -102,7 +102,7 @@ def cleanstring(instring):
     outstring = outstring.replace('UNUSED', '') # cleaning
     return outstring;
 
-def analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,level=None):
+def analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results,level=None):
     '''
     Process a homogeneous image, and derive:
     - SNR
@@ -117,8 +117,9 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,results,level=None):
     ######################################
     xsize,ysize = np.shape(pixeldataIn)
 
-    halfROIsize_x = 3.0/32.0*xsize
-    halfROIsize_y = 3.0/32.0*ysize
+    ROIsize_pct = float(params.get('ROIsize [%]', 18))
+    halfROIsize_x = round(ROIsize_pct*xsize/100/2)
+    halfROIsize_y = round(ROIsize_pct*ysize/100/2)
 
     ctr_x_start = int(round((xsize/2)-halfROIsize_x));
     ctr_x_end = int(round((xsize/2)+halfROIsize_x));
@@ -465,7 +466,7 @@ def Bucky_Flatfield_main(data, results, action):
         print ("prefix:", prefix)
 
         dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=False,logTag=logTag())
-        analyse_image_quality(dcmInfile,pixeldataIn,prefix,results)
+        analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results)
 
         ############################################################
 	  # Dose assessment will be provided for all images          #

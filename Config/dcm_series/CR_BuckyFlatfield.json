@@ -7,7 +7,8 @@
 		"buckymain": {
 			"filters": {},
 		   	"params": {
-				"protocoltag": "0x0008,0x103E"
+				"protocoltag": "0x0008,0x103E",
+				"ROIsize [%]": 18
 			}
 		}
 	},
