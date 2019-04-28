@@ -1,17 +1,31 @@
 #!/usr/bin/env python
-# PyWAD is an open-source set of plugins for the WAD-Software medical physics quality control software. 
-# The WAD Software can be found on https://github.com/wadqc
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 # 
-# The pywad package includes plugins for the automated analysis of QC images for various imaging modalities. 
-# PyWAD has been originaly initiated by Dennis Dickerscheid (AZN), Arnold Schilham (UMCU), Rob van Rooij (UMCU) and Tim de Wit (AMC) 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+# This code is an analysis module for WAD-QC 2.0: a server for automated 
+# analysis of medical images for quality control.
 #
+# The WAD-QC Software can be found on 
+# https://bitbucket.org/MedPhysNL/wadqc/wiki/Home
+
+
 # Date: 2018-11-15
 # Version: 1.0
 # Authors: C. den Harder
 # Update to wad2: D. Dickerscheid
+
 # Changelog:
-#
+#   20190426: Fix for matplotlib>3
 #
 # Description of this plugin:
 # This plugin analyses an image of a homogeneous phantom in front of the tube,
@@ -19,7 +33,7 @@
 # It produces DAP, REX, EI, SNR in the center ROI, and Homogeneity in 5 ROI's
 #
 
-__version__ = '20190427'
+__version__ = '20190428'
 __author__ = 'c.den.harder'
 
 
@@ -34,8 +48,16 @@ import logging
 
 
 import numpy as np
-import tempfile
-os.environ['MPLCONFIGDIR'] = tempfile.mkdtemp()
+
+if not 'MPLCONFIGDIR' in os.environ:
+    import pkg_resources
+    try:
+        #only for matplotlib < 3 should we use the tmp work around, but it should be applied before importing matplotlib
+        matplotlib_version = [int(v) for v in pkg_resources.get_distribution("matplotlib").version.split('.')]
+        if matplotlib_version[0]<3:
+            os.environ['MPLCONFIGDIR'] = "/tmp/.matplotlib" # if this folder already exists it must be accessible by the owner of WAD_Processor 
+    except:
+        os.environ['MPLCONFIGDIR'] = "/tmp/.matplotlib" # if this folder already exists it must be accessible by the owner of WAD_Processor 
 
 import matplotlib
 matplotlib.use('Agg')
