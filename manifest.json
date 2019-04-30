@@ -12,7 +12,8 @@
             "numpy",
             "pydicom",
             "scipy",
-            "matplotlib"
+            "matplotlib",
+            "pillow"
         ]
     }
 }
