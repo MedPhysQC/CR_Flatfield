@@ -208,7 +208,7 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results,level=None
     results.addFloat(prefix + ' Uniformity', max_dev)
 
     #########################################
-    # Image thunbnail for quick check       #
+    # Image thumbnail for quick check       #
     # for presence of artifacts             #
     #########################################
     fig = plt.figure() 
@@ -462,16 +462,24 @@ def Bucky_Flatfield_main(data, results, action):
 
     #inputfile = data.series_filelist[0]
     #Bucky_Flatfield_analyse_image(inputfile,results)
+
     for inputfile in data.series_filelist:
-        print (inputfile)
+        print("inputfile: {}".format(inputfile))
+        if len(inputfile)>1:
+            print("Warning: multi-instance series not supported!")
+            continue
+        
         dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=True,logTag=logTag())
         
-
+        # Perform input validation (fixme: add additional tests)
+        if dcmInfile.Modality == "SR":
+            continue
+        
         ############################################################
         # Read protocol name, which will be used                   #
         # as prefix in the description column                      #
         # to distinguish the detectors and the ionisation chambers #
-        ############################################################
+        ############################################################        
         protocolname = getprotocolname(dcmInfile,params)
         print ("protocol name:", protocolname)
         prefix = cleanstring( protocolname )
@@ -480,8 +488,13 @@ def Bucky_Flatfield_main(data, results, action):
         dcmInfile,pixeldataIn,dicomMode = wadwrapper_lib.prepareInput(inputfile,headers_only=False,logTag=logTag())
         analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results)
 
+        # ignore structured dose reports or any other non-image dicom files
+        if pixeldataIn is None:
+            print("Warning: dicom file does not contain image information!")
+            continue
+        
         ############################################################
-	  # Dose assessment will be provided for all images          #
+        # Dose assessment will be provided for all images          #
         ############################################################
         analyse_dose(dcmInfile,prefix,results)
 
