@@ -25,29 +25,28 @@
 # Update to wad2: D. Dickerscheid
 
 # Changelog:
+#   20190711: Adapt entry dose: DAP divided by field size; add dose at 1 m: DAP divided by field size and multiplied by SID squared
 #   20190426: Fix for matplotlib>3
 #
 # Description of this plugin:
 # This plugin analyses an image of a homogeneous phantom in front of the tube,
 # e.g.: 2mm Cu plate, or 20mm Al slab
-# It produces DAP, REX, EI, SNR in the center ROI, and Homogeneity in 5 ROI's
+# It produces DAP, entryDose, doseAt1m, SID, fieldSize, REX, EI, SNR in the center ROI, and Homogeneity in 5 ROI's
 #
 
-__version__ = '20190428'
+__version__ = '20191106'
 __author__ = 'c.den.harder'
 
 
 import matplotlib
 matplotlib.use('Agg') # Force matplotlib to not use any Xwindows backend.
+import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 import os,sys
 import numpy as np
-import scipy 
+from scipy import ndimage
 import logging
-
-
-import numpy as np
 
 if not 'MPLCONFIGDIR' in os.environ:
     import pkg_resources
@@ -59,16 +58,11 @@ if not 'MPLCONFIGDIR' in os.environ:
     except:
         os.environ['MPLCONFIGDIR'] = "/tmp/.matplotlib" # if this folder already exists it must be accessible by the owner of WAD_Processor 
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-
 try:
     import pydicom as dicom
 except ImportError:
     import dicom
 from PIL import Image
-from scipy import ndimage
 
 
 from wad_qc.module import pyWADinput
@@ -96,9 +90,6 @@ def acqdatetime_series(data, results, action):
     results.addDateTime('AcquisitionDateTime', dt)
 
 
-
-
-
 def logTag():
     return "[Bucky_Flatfield] "
 
@@ -110,9 +101,11 @@ def filter_min_diff(inlist):
         outlist.append(inlist[0])    
     return outlist
 
+    
 def diff_list(rowlist):
     return np.diff(rowlist)
 
+    
 # Clean DICOM string
 def cleanstring(instring):
     forbidden = '[,]\'" '
@@ -125,6 +118,7 @@ def cleanstring(instring):
     outstring = outstring.replace('UNUSED', '') # cleaning
     return outstring;
 
+    
 def analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results,level=None):
     '''
     Process a homogeneous image, and derive:
@@ -241,7 +235,7 @@ def analyse_image_quality(dcmInfile,pixeldataIn,prefix,params,results,level=None
     results.addObject(os.path.splitext(filename)[0],filename)
 
 
-def analyse_dose(dcmInfile,prefix,results):
+def analyse_dose(dcmInfile,pixeldataIn,prefix,results):
     '''
     Process an image, and derive:
     - DAP
@@ -249,6 +243,11 @@ def analyse_dose(dcmInfile,prefix,results):
     - Additional DICOM tags
     '''
     slash = "/"
+
+    xsize,ysize = np.shape(pixeldataIn)
+    nrPixels = float(xsize*ysize)
+    nrMegaPixels = nrPixels / float(1024*1024);
+    results.addFloat(prefix + ' nrMegaPixels', nrMegaPixels)
 
     
     ######################################
@@ -315,6 +314,7 @@ def analyse_dose(dcmInfile,prefix,results):
             Exp_in_mAs = -1;
             
     results.addFloat(prefix + ' Exp.', Exp_in_mAs)
+ 
 
     #########################################
     # Protocol parameters from DICOM header #
@@ -334,14 +334,17 @@ def analyse_dose(dcmInfile,prefix,results):
         kVp = -1;
     results.addFloat(prefix + ' kVp', kVp)
 
-    SID = -1;
+    SID_mm = -1;
     try:    
-        SID = wadwrapper_lib.readDICOMtag('0x0018,0x1110',dcmInfile);
+        SID_mm = wadwrapper_lib.readDICOMtag('0x0018,0x1110',dcmInfile);
     except:
         print ('No Source to Detector (Image) distance (SID) available.')
-    if ( SID == '' ):
+    if ( SID_mm == '' ):
         print ('No Source to Detector (Image) distance (SID) available.')
-        SID = -1;
+        SID = -1
+    else:
+        SID = 0.001*SID_mm
+
     results.addFloat(prefix + ' SID', SID)
  
     CollLV = -1;
@@ -441,6 +444,31 @@ def analyse_dose(dcmInfile,prefix,results):
         print ('No Date of Last Calibration info available.')
     results.addString(prefix + ' Cal.', DateLastCal)
 
+    
+    ######################################
+    # Derived parameters                 #
+    # - fieldSize                        #
+    # - entryDose                        #
+    # - doseAt1m                         #
+    ######################################
+    pixelSizeX = pixelSizeY = -1;
+    try:
+        pixelSizeX,pixelSizeY = wadwrapper_lib.readDICOMtag('0x0028,0x0030',dcmInfile); # mm
+    except:
+        print('No pixelsize available.')
+    if (( pixelSizeX == '' ) or ( pixelSizeY == '' )):
+        print('No pixelsize available.')
+        pixelSizeX = pixelSizeY = -1;
+    fieldSize = nrPixels*pixelSizeX*pixelSizeY/float(1000000.0) # m*m
+    results.addFloat(prefix + ' fieldSize', fieldSize)
+    entryDose = -1;
+    if not (fieldSize == 0):
+        entryDose = 0.01 * DAP / fieldSize # mGy
+    results.addFloat(prefix + ' entryDose', entryDose)
+    
+    doseAt1m = entryDose * SID*SID
+    results.addFloat(prefix + ' doseAt1m', doseAt1m)
+    
 
 def getprotocolname(dcmInfile,params):
     protocoltag = '0x0018,0x1030' #default tag: ProtocolName
@@ -496,7 +524,7 @@ def Bucky_Flatfield_main(data, results, action):
         ############################################################
         # Dose assessment will be provided for all images          #
         ############################################################
-        analyse_dose(dcmInfile,prefix,results)
+        analyse_dose(dcmInfile,pixeldataIn,prefix,results)
 
         # One image per detector / ionisation chamber    
         # Separator between this and next image:
